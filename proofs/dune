@@ -1,0 +1,7 @@
+(library
+ (name proofs)
+ (synopsis "Coq's Higher-level Refinement Proof Engine and Top-level Proof Structure")
+ (public_name coq-core.proofs)
+ (wrapped false)
+ (modules_without_implementation tactypes)
+ (libraries pretyping))
