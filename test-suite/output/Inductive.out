@@ -1,0 +1,34 @@
+File "./output/Inductive.v", line 1, characters 0-93:
+The command has indeed failed with message:
+In environment
+list' : Set -> Set
+A : Set
+a : A
+l : list' A
+Unable to unify "list' (A * A)%type" with "list' A".
+Inductive foo (A : Type) (x : A) (y : A := x) : Prop :=  Foo : foo A x.
+
+Arguments foo A%type_scope x
+Arguments Foo A%type_scope x
+myprod unit bool
+     : Set
+option : Type -> Type
+
+option is template universe polymorphic
+Arguments option A%type_scope
+Expands to: Inductive Coq.Init.Datatypes.option
+option : Type@{option.u0} -> Type@{max(Set,option.u0)}
+
+option is template universe polymorphic on option.u0
+Arguments option A%type_scope
+Expands to: Inductive Coq.Init.Datatypes.option
+File "./output/Inductive.v", line 27, characters 4-13:
+The command has indeed failed with message:
+Parameters should be syntactically the same for each inductive type.
+Type "B" has no parameters
+but type "Inductive" has parameters "A".
+File "./output/Inductive.v", line 30, characters 6-15:
+The command has indeed failed with message:
+Parameters should be syntactically the same for each record type.
+Type "B" has no parameters
+but type "Inductive" has parameters "A".
