@@ -1,0 +1,14 @@
+(library
+ (name lib)
+ (synopsis "Coq's Utility Library [coq-specific]")
+ (public_name coq-core.lib)
+ (wrapped false)
+ (modules_without_implementation xml_datatype)
+ (libraries
+  coq-core.boot coq-core.clib coq-core.config
+  (select interrupted.ml from
+   (!memprof-limits -> interrupted.std.ml)
+   (memprof-limits -> interrupted.memprof.ml))
+  (select instr.ml from
+   (!coqperf -> instr.noperf.ml)
+   (coqperf -> instr.perf.ml))))
