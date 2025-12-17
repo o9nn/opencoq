@@ -1,0 +1,17 @@
+(library
+ (name top_printers)
+ (public_name coq.top_printers)
+ (synopsis "Coq's Debug Printers")
+ (wrapped false)
+ (modules :standard)
+ (optional)
+ (libraries coq.toplevel coq.plugins.ltac))
+
+(rule
+  (targets dune-dbg)
+  (deps dune-dbg.in
+        ../checker/coqchk.bc
+        ../topbin/coqtop_byte_bin.bc
+        ; This is not enough as the call to `ocamlfind` will fail :/
+        top_printers.cma)
+  (action (copy dune-dbg.in dune-dbg)))

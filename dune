@@ -1,0 +1,46 @@
+; Default flags for all Coq libraries.
+(env
+ (dev     (flags :standard -rectypes -w -9-27+40+60 \ -short-paths))
+ (release (flags :standard -rectypes)
+          (ocamlopt_flags -O3 -unbox-closures))
+ (ireport (flags :standard -rectypes -w -9-27-40+60)
+          (ocamlopt_flags :standard -O3 -unbox-closures -inlining-report))
+ (ocaml409
+  (flags :standard -strict-sequence -strict-formats -keep-locs -rectypes -w -9-27+40+60 -warn-error -5 -alert --deprecated)))
+
+; The _ profile could help factoring the above, however it doesn't
+; seem to work like we'd expect/like:
+;
+; (_ (flags :standard -rectypes)))
+
+; Rules for coq_dune
+(rule
+ (targets .vfiles.d)
+ (deps
+  (source_tree theories)
+  (source_tree plugins))
+ (action (with-stdout-to .vfiles.d (bash "%{bin:coqdep} -dyndep both -noglob -boot `find theories plugins -type f -name *.v`"))))
+
+(alias
+ (name vodeps)
+ (deps tools/coq_dune.exe .vfiles.d))
+  ; (action (run coq_dune .vfiles.d))))
+
+(install
+ (section lib)
+ (package coq)
+ (files
+   revision))
+
+(rule
+ (targets revision)
+ (deps (:rev-script dev/tools/make_git_revision.sh))
+ (action (with-stdout-to revision (bash %{rev-script}))))
+
+; Use summary.log as the target
+(alias
+ (name runtest)
+ (package coqide-server)
+ (deps test-suite/summary.log))
+
+; (dirs (:standard _build_ci))

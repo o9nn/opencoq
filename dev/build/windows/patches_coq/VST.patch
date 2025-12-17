@@ -1,0 +1,15 @@
+diff --git a/Makefile b/Makefile
+index 938abbeb..d31de4aa 100755
+--- a/Makefile
++++ b/Makefile
+@@ -82,8 +82,8 @@ endif
+ 
+ COMPCERTDIRS=lib common $(ARCHDIRS) cfrontend flocq exportclight $(BACKEND)
+ 
+-COMPCERT_R_FLAGS= $(foreach d, $(COMPCERTDIRS), -R $(COMPCERT)/$(d) compcert.$(d))
+-EXTFLAGS= $(foreach d, $(COMPCERTDIRS), -Q $(COMPCERT)/$(d) compcert.$(d))
++COMPCERT_R_FLAGS= $(foreach d, $(COMPCERTDIRS), -R $(COMPCERT)/$(d) VST.compcert.$(d))
++EXTFLAGS= $(foreach d, $(COMPCERTDIRS), -Q $(COMPCERT)/$(d) VST.compcert.$(d))
+ ifneq ($(wildcard InteractionTrees/theories),)
+ EXTFLAGS:=$(EXTFLAGS) -Q InteractionTrees/theories ITree
+ endif

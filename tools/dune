@@ -1,0 +1,48 @@
+(install
+ (section lib)
+ (package coq)
+ (files
+  (CoqMakefile.in as tools/CoqMakefile.in)
+  (TimeFileMaker.py as tools/TimeFileMaker.py)
+  (make-one-time-file.py as tools/make-one-time-file.py)
+  (make-both-time-files.py as tools/make-both-time-files.py)
+  (make-both-single-timing-files.py as tools/make-both-single-timing-files.py)))
+
+(executable
+ (name coq_makefile)
+ (public_name coq_makefile)
+ (package coq)
+ (modules coq_makefile)
+ (libraries coq.lib))
+
+(executable
+ (name coqworkmgr)
+ (public_name coqworkmgr)
+ (package coq)
+ (modules coqworkmgr)
+ (libraries coq.stm))
+
+(executable
+ (name coqdep)
+ (public_name coqdep)
+ (package coq)
+ (modules coqdep_lexer coqdep_common coqdep)
+ (libraries coq.lib))
+
+(ocamllex coqdep_lexer)
+
+(executable
+ (name coqwc)
+ (public_name coqwc)
+ (package coq)
+ (modules coqwc)
+ (libraries))
+
+(ocamllex coqwc)
+
+(executables
+ (names coq_tex coq_dune)
+ (public_names coq-tex coq_dune)
+ (package coq)
+ (modules coq_tex coq_dune)
+ (libraries str))
