@@ -1,0 +1,50 @@
+FLG -rectypes -thread -safe-string -w +a-4-9-27-41-42-44-45-48-50
+
+S config
+B config
+S ide
+B ide
+S lib
+B lib
+S intf
+B intf
+S kernel
+B kernel
+S kernel/byterun
+B kernel/byterun
+S library
+B library
+S engine
+B engine
+S pretyping
+B pretyping
+S interp
+B interp
+S proofs
+B proofs
+S tactics
+B tactics
+S printing
+B printing
+S parsing
+B parsing
+S stm
+B stm
+S toplevel
+B toplevel
+S vernac
+B vernac
+S plugins/ltac
+B plugins/ltac
+
+S tools
+B tools
+S tools/coqdoc
+B tools/coqdoc
+S dev
+B dev
+
+S plugins/**
+B plugins/**
+
+PKG threads.posix camlp5
