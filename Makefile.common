@@ -1,0 +1,189 @@
+#######################################################################
+#  v      #   The Coq Proof Assistant  /  The Coq Development Team    #
+# <O___,, #        INRIA-Rocquencourt  &  LRI-CNRS-Orsay              #
+#   \VV/  #############################################################
+#    //   #      This file is distributed under the terms of the      #
+#         #       GNU Lesser General Public License Version 2.1       #
+#######################################################################
+
+-include config/Makefile
+
+###########################################################################
+# Executables
+###########################################################################
+
+COQMKTOP:=bin/coqmktop$(EXE) 
+
+COQTOPBYTE:=bin/coqtop.byte$(EXE)
+COQTOPEXE:=bin/coqtop$(EXE)
+
+COQDEP:=bin/coqdep$(EXE)
+COQMAKEFILE:=bin/coq_makefile$(EXE)
+GALLINA:=bin/gallina$(EXE)
+COQTEX:=bin/coq-tex$(EXE)
+COQWC:=bin/coqwc$(EXE)
+COQDOC:=bin/coqdoc$(EXE)
+COQC:=bin/coqc$(EXE)
+COQWORKMGR:=bin/coqworkmgr$(EXE)
+
+TOOLS:=$(COQDEP) $(COQMAKEFILE) $(GALLINA) $(COQTEX) $(COQWC) $(COQDOC) $(COQC)\
+	$(COQWORKMGR)
+
+COQDEPBOOT:=bin/coqdep_boot$(EXE)
+OCAMLLIBDEP:=bin/ocamllibdep$(EXE)
+FAKEIDE:=bin/fake_ide$(EXE)
+
+PRIVATEBINARIES:=$(FAKEIDE) $(OCAMLLIBDEP) $(COQDEPBOOT)
+
+CSDPCERT:=plugins/micromega/csdpcert$(EXE)
+
+###########################################################################
+# Object and Source files
+###########################################################################
+
+ifeq ($(HASNATDYNLINK)-$(BEST),true-opt)
+  DEPNATDYN:=
+else
+  DEPNATDYN:=-natdynlink no
+endif
+
+INSTALLBIN:=install
+INSTALLLIB:=install -m 644 
+INSTALLSH:=./install.sh
+MKDIR:=install -d
+
+CORESRCDIRS:=\
+  config 	lib		kernel		kernel/byterun	library \
+  proofs 	tactics 	pretyping	interp		stm \
+  toplevel	parsing 	printing	intf	engine	ltac
+
+PLUGINDIRS:=\
+  omega		romega 		micromega 	quote \
+  setoid_ring 	extraction 	fourier \
+  cc 		funind 		firstorder 	derive \
+  rtauto 	nsatz           syntax          decl_mode	btauto \
+  ssrmatching   ltac
+
+SRCDIRS:=\
+  $(CORESRCDIRS)  \
+  tools 	tools/coqdoc	\
+  $(addprefix plugins/, $(PLUGINDIRS))
+
+COQRUN := coqrun
+LIBCOQRUN:=kernel/byterun/lib$(COQRUN).a
+DLLCOQRUN:=$(dir $(LIBCOQRUN))dll$(COQRUN)$(DLLEXT)
+
+BYTERUN:=$(addprefix kernel/byterun/, \
+  coq_fix_code.o coq_memory.o coq_values.o coq_interp.o )
+
+# LINK ORDER:
+# Beware that highparsing.cma should appear before ltac.cma
+# respecting this order is useful for developers that want to load or link
+# the libraries directly
+
+CORECMA:=lib/clib.cma lib/lib.cma kernel/kernel.cma library/library.cma \
+        engine/engine.cma pretyping/pretyping.cma interp/interp.cma proofs/proofs.cma \
+        parsing/parsing.cma printing/printing.cma tactics/tactics.cma \
+	stm/stm.cma toplevel/toplevel.cma parsing/highparsing.cma ltac/ltac.cma
+
+TOPLOOPCMA:=stm/proofworkertop.cma stm/tacworkertop.cma stm/queryworkertop.cma
+
+GRAMMARCMA:=grammar/compat5.cmo grammar/grammar.cma
+
+# modules known by the toplevel of Coq
+
+OBJSMOD:=$(shell cat $(CORECMA:.cma=.mllib))
+
+###########################################################################
+# plugins object files
+###########################################################################
+
+OMEGACMO:=plugins/omega/omega_plugin.cmo
+ROMEGACMO:=plugins/romega/romega_plugin.cmo
+MICROMEGACMO:=plugins/micromega/micromega_plugin.cmo
+QUOTECMO:=plugins/quote/quote_plugin.cmo
+RINGCMO:=plugins/setoid_ring/newring_plugin.cmo
+NSATZCMO:=plugins/nsatz/nsatz_plugin.cmo
+FOURIERCMO:=plugins/fourier/fourier_plugin.cmo
+EXTRACTIONCMO:=plugins/extraction/extraction_plugin.cmo
+FUNINDCMO:=plugins/funind/recdef_plugin.cmo
+FOCMO:=plugins/firstorder/ground_plugin.cmo
+CCCMO:=plugins/cc/cc_plugin.cmo
+BTAUTOCMO:=plugins/btauto/btauto_plugin.cmo
+RTAUTOCMO:=plugins/rtauto/rtauto_plugin.cmo
+NATSYNTAXCMO:=plugins/syntax/nat_syntax_plugin.cmo
+OTHERSYNTAXCMO:=$(addprefix plugins/syntax/, \
+        z_syntax_plugin.cmo \
+        numbers_syntax_plugin.cmo \
+        r_syntax_plugin.cmo \
+	ascii_syntax_plugin.cmo \
+        string_syntax_plugin.cmo )
+DECLMODECMO:=plugins/decl_mode/decl_mode_plugin.cmo
+DERIVECMO:=plugins/derive/derive_plugin.cmo
+LTACCMO:=plugins/ltac/ltac_plugin.cmo
+SSRMATCHINGCMO:=plugins/ssrmatching/ssrmatching_plugin.cmo
+
+PLUGINSCMO:=$(OMEGACMO) $(ROMEGACMO) $(MICROMEGACMO) $(DECLMODECMO) \
+        $(QUOTECMO) $(RINGCMO) \
+        $(FOURIERCMO) $(EXTRACTIONCMO) \
+        $(CCCMO)  $(FOCMO) $(RTAUTOCMO) $(BTAUTOCMO) \
+        $(FUNINDCMO) $(NSATZCMO) $(NATSYNTAXCMO) $(OTHERSYNTAXCMO) \
+	$(DERIVECMO) $(SSRMATCHINGCMO) $(LTACCMO)
+
+ifeq ($(HASNATDYNLINK)-$(BEST),false-opt)
+ STATICPLUGINS:=$(PLUGINSCMO)
+ PLUGINS:=
+else
+ STATICPLUGINS:=
+ PLUGINS:=$(PLUGINSCMO)
+endif
+PLUGINSOPT:=$(PLUGINSCMO:.cmo=.cmxs)
+
+LINKCMO:=$(CORECMA) $(STATICPLUGINS)
+LINKCMX:=$(CORECMA:.cma=.cmxa) $(STATICPLUGINS:.cmo=.cmx)
+
+###########################################################################
+# vo files
+###########################################################################
+
+## we now retrieve the names of .vo file to compile in */vo.itarget files
+
+THEORIESVO:= $(foreach f, $(wildcard theories/*/vo.itarget), \
+                $(addprefix $(dir $(f)),$(shell cat $(f))))
+
+PLUGINSVO:=  $(foreach f, $(wildcard plugins/*/vo.itarget), \
+                $(addprefix $(dir $(f)),$(shell cat $(f))))
+
+ALLVO:= $(THEORIESVO) $(PLUGINSVO)
+VFILES:= $(ALLVO:.vo=.v)
+
+## More specific targets
+
+THEORIESLIGHTVO:= \
+ $(filter theories/Init/% theories/Logic/% theories/Unicode/% theories/Arith/%, $(THEORIESVO))
+
+ALLSTDLIB := test-suite/misc/universes/all_stdlib
+
+# convert a (stdlib) filename into a module name:
+# remove .vo, replace theories and plugins by Coq, and replace slashes by dots
+vo_to_mod = $(subst /,.,$(patsubst theories/%,Coq.%,$(patsubst plugins/%,Coq.%,$(1:.vo=))))
+
+ALLMODS:=$(call vo_to_mod,$(ALLVO))
+
+
+# Converting a stdlib filename into native compiler filenames
+# Used for install targets
+vo_to_cm = $(foreach vo,$(1),$(dir $(vo)).coq-native/$(subst /,_,$(patsubst theories/%,NCoq_%,$(patsubst plugins/%,NCoq_%,$(vo:.vo=.cm*)))))
+
+vo_to_obj = $(foreach vo,$(1),$(dir $(vo)).coq-native/$(subst /,_,$(patsubst theories/%,NCoq_%,$(patsubst plugins/%,NCoq_%,$(vo:.vo=.o)))))
+
+LIBFILES:=$(THEORIESVO) $(PLUGINSVO) $(call vo_to_cm,$(THEORIESVO)) \
+	    $(call vo_to_cm,$(PLUGINSVO)) $(call vo_to_obj,$(THEORIESVO)) \
+	    $(call vo_to_obj,$(PLUGINSVO)) \
+	    $(PLUGINSVO:.vo=.v) $(THEORIESVO:.vo=.v) \
+	    $(PLUGINSVO:.vo=.glob) $(THEORIESVO:.vo=.glob)
+
+# For emacs: 
+# Local Variables: 
+# mode: makefile 
+# End:
