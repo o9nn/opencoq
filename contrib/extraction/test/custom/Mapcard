@@ -1,0 +1,4 @@
+Require Import Plus.
+Extraction NoInline plus_is_one.
+Require Import BinNat.
+Extraction NoInline Ndouble Ndouble_plus_one.
