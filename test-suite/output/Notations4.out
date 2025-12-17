@@ -1,0 +1,259 @@
+[< 0 > + < 1 > * < 2 >]
+     : nat
+Entry custom:myconstr is
+[ "6" RIGHTA
+  [  ]
+| "5" RIGHTA
+  [ SELF; "+"; NEXT ]
+| "4" RIGHTA
+  [ SELF; "*"; NEXT ]
+| "3" RIGHTA
+  [ "<"; term LEVEL "10"; ">" ] ]
+
+[< b > + < b > * < 2 >]
+     : nat
+[<< # 0 >>]
+     : option nat
+[b + c]
+     : nat
+fun a : nat => [a + a]
+     : nat -> nat
+[1 {f 1}]
+     : Expr
+fun (x : nat) (y z : Expr) => [1 + y z + {f x}]
+     : nat -> Expr -> Expr -> Expr
+fun e : Expr =>
+match e with
+| [x y + z] => [x + y z]
+| [1 + 1] => [1]
+| _ => [e + e]
+end
+     : Expr -> Expr
+[(1 + 1)]
+     : Expr
+myAnd1 True True
+     : Prop
+r 2 3
+     : Prop
+let v := 0%test17 in v : myint63
+     : myint63
+fun y : nat => # (x, z) |-> y & y
+     : forall y : nat,
+       (?T1 * ?T2 -> ?T1 * ?T2 * nat) * (?T * ?T0 -> ?T * ?T0 * nat)
+where
+?T : [y : nat  pat : ?T * ?T0  p0 : ?T * ?T0  p := p0 : ?T * ?T0
+     |- Type] (pat, p0, p cannot be used)
+?T0 : [y : nat  pat : ?T * ?T0  p0 : ?T * ?T0  p := p0 : ?T * ?T0
+      |- Type] (pat, p0, p cannot be used)
+?T1 : [y : nat  pat : ?T1 * ?T2  p0 : ?T1 * ?T2  p := p0 : ?T1 * ?T2
+      |- Type] (pat, p0, p cannot be used)
+?T2 : [y : nat  pat : ?T1 * ?T2  p0 : ?T1 * ?T2  p := p0 : ?T1 * ?T2
+      |- Type] (pat, p0, p cannot be used)
+fun y : nat => # (x, z) |-> (x + y) & (y + z)
+     : forall y : nat,
+       (nat * ?T -> nat * ?T * nat) * (?T0 * nat -> ?T0 * nat * nat)
+where
+?T : [y : nat  pat : nat * ?T  p0 : nat * ?T  p := p0 : nat * ?T
+     |- Type] (pat, p0, p cannot be used)
+?T0 : [y : nat  pat : ?T0 * nat  p0 : ?T0 * nat  p := p0 : ?T0 * nat
+      |- Type] (pat, p0, p cannot be used)
+fun '{| |} => true
+     : R -> bool
+File "./output/Notations4.v", line 139, characters 82-85:
+The command has indeed failed with message:
+The format is not the same on the right- and left-hand sides of the special token "..".
+File "./output/Notations4.v", line 143, characters 76-78:
+The command has indeed failed with message:
+The format is not the same on the right- and left-hand sides of the special token "..".
+File "./output/Notations4.v", line 147, characters 78-81:
+The command has indeed failed with message:
+The format is not the same on the right- and left-hand sides of the special token "..".
+File "./output/Notations4.v", line 151, characters 52-55:
+The command has indeed failed with message:
+The format is not the same on the right- and left-hand sides of the special token "..".
+Entry custom:expr is
+[ "201" RIGHTA
+  [ "{"; term LEVEL "200"; "}" ]
+| "1" RIGHTA
+  [  ] ]
+
+fun x : nat => [ x ]
+     : nat -> nat
+fun x : nat => [x]
+     : nat -> nat
+∀ x : nat, x = x
+     : Prop
+File "./output/Notations4.v", line 185, characters 0-160:
+Warning: Notation "∀ _ .. _ , _" was already defined with a different format
+in scope type_scope. [notation-incompatible-format,parsing]
+∀x : nat,x = x
+     : Prop
+File "./output/Notations4.v", line 198, characters 0-60:
+Warning: Notation "_ %%% _" was already defined with a different format.
+[notation-incompatible-format,parsing]
+File "./output/Notations4.v", line 202, characters 0-64:
+Warning: Notation "_ %%% _" was already defined with a different format.
+[notation-incompatible-format,parsing]
+File "./output/Notations4.v", line 207, characters 0-62:
+Warning: Lonely notation "_ %%%% _" was already defined with a different
+format. [notation-incompatible-format,parsing]
+3  %%  4
+     : nat
+3  %%  4
+     : nat
+3   %%   4
+     : nat
+File "./output/Notations4.v", line 235, characters 47-59:
+Warning: The format modifier is irrelevant for only-parsing rules.
+[irrelevant-format-only-parsing,parsing]
+File "./output/Notations4.v", line 239, characters 36-48:
+Warning: The only parsing modifier has no effect in Reserved Notation.
+[irrelevant-reserved-notation-only-parsing,parsing]
+fun x : nat => U (S x)
+     : nat -> nat
+V tt
+     : unit * (unit -> unit)
+fun x : nat => V x
+     : forall x : nat, nat * (?T -> ?T)
+where
+?T : [x : nat  x0 : ?T |- Type] (x0 cannot be used)
+File "./output/Notations4.v", line 256, characters 0-30:
+Warning: Notation "_ :=: _" was already used. [notation-overridden,parsing]
+0 :=: 0
+     : Prop
+fun x : nat => <{ x; (S x) }>
+     : nat -> nat
+Set
+     : Type
+fun x : nat => S x
+     : nat -> nat
+True
+     : Prop
+exists p : nat, ▢_p (p >= 1)
+     : Prop
+▢_n (n >= 1)
+     : Prop
+File "./output/Notations4.v", line 326, characters 17-20:
+The command has indeed failed with message:
+Found an inductive type while a variable name was expected.
+File "./output/Notations4.v", line 327, characters 17-18:
+The command has indeed failed with message:
+Found a constructor while a variable name was expected.
+File "./output/Notations4.v", line 329, characters 17-18:
+The command has indeed failed with message:
+Found a constant while a variable name was expected.
+exists x y : nat, ▢_(x, y) (x >= 1 /\ y >= 2)
+     : Prop
+▢_n (n >= 1)
+     : Prop
+File "./output/Notations4.v", line 342, characters 17-20:
+The command has indeed failed with message:
+Found an inductive type while a pattern was expected.
+▢_tt (tt = tt)
+     : Prop
+File "./output/Notations4.v", line 345, characters 17-18:
+The command has indeed failed with message:
+Found a constant while a pattern was expected.
+exists x y : nat, ▢_(x, y) (x >= 1 /\ y >= 2)
+     : Prop
+pseudo_force n (fun n : nat => n >= 1)
+     : Prop
+File "./output/Notations4.v", line 358, characters 17-20:
+The command has indeed failed with message:
+Found an inductive type while a pattern was expected.
+▢_tt (tt = tt)
+     : Prop
+File "./output/Notations4.v", line 361, characters 17-18:
+The command has indeed failed with message:
+Found a constant while a pattern was expected.
+exists x y : nat, myforce (x, y) (x >= 1 /\ y >= 2)
+     : Prop
+myforce n (n >= 1)
+     : Prop
+File "./output/Notations4.v", line 373, characters 21-24:
+The command has indeed failed with message:
+Found an inductive type while a pattern was expected.
+myforce tt (tt = tt)
+     : Prop
+File "./output/Notations4.v", line 376, characters 21-22:
+The command has indeed failed with message:
+Found a constant while a pattern was expected.
+id nat
+     : Set
+fun a : bool => id a
+     : bool -> bool
+fun nat : bool => id nat
+     : bool -> bool
+File "./output/Notations4.v", line 388, characters 17-20:
+The command has indeed failed with message:
+Found an inductive type while a pattern was expected.
+!! nat, nat = true
+     : Prop
+!!! nat, nat = true
+     : Prop
+!!!! (nat, id), nat = true /\ id = false
+     : Prop
+∀ x : nat, x = 0
+     : Prop
+∀₁ x, x = 0
+     : Prop
+∀₁ x, x = 0
+     : Prop
+∀₂ x y, x + y = 0
+     : Prop
+((1, 2))
+     : nat * nat
+%% [x == 1]
+     : Prop
+%%% [1]
+     : Prop
+[[2]]
+     : nat * nat
+%%%
+     : Type
+## (x, _) (x = 0)
+     : Prop
+File "./output/Notations4.v", line 484, characters 21-30:
+The command has indeed failed with message:
+Unexpected type constraint in notation already providing a type constraint.
+## '(x, y) (x + y = 0)
+     : Prop
+## x (x = 0)
+     : Prop
+## '(x, y) (x = 0)
+     : Prop
+fun f : ## a (a = 0) => f 1 eq_refl
+     : ## a (a = 0) -> 1 = 0
+[MyNotation 0]
+     : nat
+fun MyNone : nat => MyNone
+     : nat -> nat
+MyNone+
+     : option ?A
+where
+?A : [ |- Type]
+Some MyNone+
+     : option (option ?A)
+where
+?A : [ |- Type]
+0+
+     : option ?A
+where
+?A : [ |- Type]
+0+
+     : option ?A
+where
+?A : [ |- Type]
+0
+     : nat
+File "./output/Notations4.v", line 534, characters 0-78:
+The command has indeed failed with message:
+Notation "func _ .. _ , _" is already defined at level 200 with arguments
+binder, constr at next level while it is now required to be at level 200
+with arguments constr, constr at next level.
+File "./output/Notations4.v", line 539, characters 0-57:
+The command has indeed failed with message:
+Notation "[[ _ ]]" is already defined at level 0 with arguments custom foo
+while it is now required to be at level 0 with arguments custom bar.
+lambda x y : nat, x + y = 0
+     : nat -> nat -> Prop

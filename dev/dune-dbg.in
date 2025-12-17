@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Run in a proper install dune env.
+
+opts=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -emacs)
+            shift
+            opts+=("-emacs")
+            ;;
+        coqchk)
+            shift
+            exe=_build/default/checker/coqchk.bc
+            break
+            ;;
+        coqide)
+            shift
+            exe=_build/default/ide/coqide/coqide_main.bc
+            break
+            ;;
+        coqc)
+            shift
+            exe=_build/default/topbin/coqc_bin.bc
+            break
+            ;;
+        coqtop)
+            shift
+            exe=_build/default/topbin/coqtop_byte_bin.bc
+            break
+            ;;
+        coqdep)
+            shift
+            exe=_build/default/tools/coqdep/coqdep.bc
+            break
+            ;;
+        *)
+            echo "usage: dune exec -- dev/dune-dbg [-emacs] {coqchk|coqide|coqc|coqtop|coqdep} coqargs"
+            exit 1
+            ;;
+    esac
+done
+
+ocamldebug "${opts[@]}" $(ocamlfind query -recursive -i-format coq-core.top_printers) -I +threads -I dev $exe "$@"
