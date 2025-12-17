@@ -1,0 +1,10 @@
+coqtop.byte
+coqtop
+minicoq
+coqtop.opt
+glob.dump
+tmp
+.depend.devel
+newtheories
+newcontrib
+*.v8

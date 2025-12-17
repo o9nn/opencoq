@@ -1,0 +1,131 @@
+#!/bin/sh
+
+# Automatic test of Coq
+
+if [ "$1" = -byte ]; then
+  command7="../bin/coqtop.byte -translate -q -batch -load-vernac-source"
+else
+  command7="../bin/coqtop -translate -q -batch -load-vernac-source"
+fi
+
+if [ "$1" = -byte ]; then
+  command="../bin/coqtop.byte -q -batch -load-vernac-source"
+else
+  command="../bin/coqtop -q -batch -load-vernac-source"
+fi
+
+# on compte le nombre de tests et de succès
+nbtests=0
+nbtestsok=0
+
+# La fonction suivante teste le compilateur sur des fichiers qu'il doit
+# accepter
+test_success() {
+    for f in $1/*.v; do 
+	nbtests=`expr $nbtests + 1`
+	printf "    "$f"..."
+	$command7 $f > /dev/null 2>&1
+	if [ $? = 0 ]; then
+            mv "$f"8 tmp8.v
+            $command tmp8.v > /dev/null 2>&1
+            if [ $? = 0 ]; then
+                echo "Ok"
+                nbtestsok=`expr $nbtestsok + 1`
+            else
+                echo "V8 Error! (should be accepted)"
+            fi
+            rm tmp8.v
+        else 
+	    echo "V7 Error! (should be accepted)"
+        fi 
+    done
+    for f in $1/*.v8; do 
+	nbtests=`expr $nbtests + 1`
+	printf "    "$f"..."
+        cp $f tmp8.v
+	$command tmp8.v > /dev/null 2>&1
+        if [ $? = 0 ]; then
+            echo "Ok"
+            nbtestsok=`expr $nbtestsok + 1`
+        else
+            echo "V8 Error! (should be accepted)"
+        fi
+        rm tmp8.v
+    done
+}
+
+# La fonction suivante teste le compilateur sur des fichiers qu'il doit
+# refuser
+test_failure() {
+    for f in $1/*.v; do 
+	nbtests=`expr $nbtests + 1`
+	printf "    "$f"..."
+	$command7 $f > /dev/null 2>&1
+	if [ $? != 0 ]; then 
+	    echo "Ok"
+	    nbtestsok=`expr $nbtestsok + 1`
+        else 
+	    echo "Error! (should be rejected)"
+        fi 
+    done
+}
+
+# La fonction suivante teste la sortie des fichiers qu'elle exécute 
+test_output() {
+    for f in $1/*.v; do 
+	nbtests=`expr $nbtests + 1`
+	printf "    "$f"..."
+        tmpoutput=`mktemp /tmp/coqcheck.XXXXXX`
+	$command7 $f | tail +3 > $tmpoutput 2>&1
+        foutput=`dirname $f`/`basename $f .v`.out
+        diff $tmpoutput $foutput > /dev/null
+	if [ $? = 0 ]; then 
+	    echo "Ok"
+	    nbtestsok=`expr $nbtestsok + 1`
+        else 
+	    echo "Error! (unexpected output)"
+        fi
+	rm $tmpoutput
+    done
+}
+
+# La fonction suivante teste l'analyseur syntaxique fournit par "parser"
+# Elle fonctionne comme test_output
+test_parser() {
+    if [ -d $1 ]; then
+    for f in $1/*.v; do
+        nbtests=`expr $nbtests + 1`
+        printf "    "$f"..."
+        tmpoutput=`mktemp /tmp/coqcheck.XXXXXX`
+        foutput=`dirname $f`/`basename $f .v`.out
+        echo "parse_file 1 \"$f\"" | ../bin/parser > $tmpoutput 2>&1
+        perl -ne 'if(/Starting.*Parser Loop/){$printit = 1};print if $printit' \
+            $tmpoutput 2>&1 | grep -i error > /dev/null
+        if [ $? = 0 ] ; then
+            echo "Error! (unexpected output)"
+        else
+            echo "Ok"
+            nbtestsok=`expr $nbtestsok + 1`
+        fi
+	rm $tmpoutput
+    done
+    fi
+}
+
+# Programme principal
+
+# echo "Output tests"
+# test_output output
+echo "[Output tests are off]"
+echo "Success tests"
+test_success success
+echo "Failure tests"
+test_failure failure
+echo "Parser tests"
+test_parser parser
+pourcentage=`expr 100 \* $nbtestsok / $nbtests`
+echo
+echo "$nbtestsok tests passed over $nbtests, i.e. $pourcentage %"
+
+
+
