@@ -4,8 +4,11 @@ Ggml_bindings
 Task_system
 Attention_system
 Pln_formulas
+Pln_cache
 Pln_integration
+Pln_moses
 Moses_programs
+Persistence
 Reasoning_engine
 Neural_symbolic_fusion
 Creative_problem_solving
