@@ -1,8 +1,14 @@
 Hypergraph
 Tensor_backend
+Ggml_bindings
 Task_system
 Attention_system
+Pln_formulas
+Pln_integration
+Moses_programs
 Reasoning_engine
+Neural_symbolic_fusion
+Creative_problem_solving
 Metacognition
 Cognitive_engine
 Cognitive_engine_plugin_mod
