@@ -1,6 +1,8 @@
 Hypergraph
 Tensor_backend
 Ggml_bindings
+Ggml_native
+Rocksdb_native
 Task_system
 Attention_system
 Pln_formulas
